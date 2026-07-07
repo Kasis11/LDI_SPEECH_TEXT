@@ -12,10 +12,10 @@ export default function AppHeader() {
           mb: 1,
         }}
       >
-        <GraphicEqRoundedIcon color="primary" fontSize="large" />
+        {/* <GraphicEqRoundedIcon color="primary" fontSize="large" /> */}
 
         <Typography variant="h4">
-          Voice Recorder Assistant
+          Bureau — Scenario Intelligence (SIB)
         </Typography>
       </Box>
 

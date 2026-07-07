@@ -1,19 +1,16 @@
 import { Box, IconButton, Paper, TextField } from "@mui/material";
-import MicRoundedIcon from "@mui/icons-material/MicRounded";
-import StopRoundedIcon from "@mui/icons-material/StopRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import { useRef } from "react";
 
-export default function ChatInput({
+export default function TextInput({
   message,
   onMessageChange,
   onSend,
-  onMicClick,
-  isRecording,
   onExcelSelect,
 }) {
   const fileInputRef = useRef(null);
+
   return (
     <Paper
       elevation={2}
@@ -45,13 +42,14 @@ export default function ChatInput({
             e.target.value = "";
           }}
         />
+
         <TextField
           fullWidth
           multiline
-          minRows={1}
-          maxRows={5}
+          minRows={2}
+          maxRows={8}
           variant="outlined"
-          placeholder="Type a message or use voice..."
+          placeholder="Type your scenario details here..."
           value={message ?? ""}
           onChange={onMessageChange}
           sx={{
@@ -60,7 +58,7 @@ export default function ChatInput({
             },
           }}
         />
- 
+
         <IconButton
           onClick={() => fileInputRef.current.click()}
           sx={{
@@ -75,28 +73,6 @@ export default function ChatInput({
           }}
         >
           <AttachFileRoundedIcon />
-        </IconButton>
-
-        <IconButton
-          onClick={onMicClick}
-          sx={{
-            width: 56,
-            height: 56,
-            bgcolor: isRecording ? "error.main" : "primary.main",
-            color: "white",
-            transition: "all 0.2s ease",
-
-            "&:hover": {
-              bgcolor: isRecording ? "error.dark" : "primary.dark",
-              transform: "scale(1.05)",
-            },
-          }}
-        >
-          {isRecording ? (
-            <StopRoundedIcon fontSize="medium" />
-          ) : (
-            <MicRoundedIcon fontSize="medium" />
-          )}
         </IconButton>
 
         <IconButton

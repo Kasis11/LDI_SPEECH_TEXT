@@ -19,4 +19,6 @@ Run frontend: npm run dev
 # openai
 # azure-cognitiveservices-speech
 
-run backend: uvicorn main:app --reload# LDI_SPEECH_TEXT
+run backend: uvicorn main:app --reload
+
+# LDI_SPEECH_TEXT

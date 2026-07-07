@@ -8,28 +8,17 @@ import {
 
 import { useState } from "react";
 
-import VoiceRecorderInput from "../../../components/recorder/VoiceRecorderInput";
-import useVoiceRecorder from "../../../hooks/useVoiceRecorder";
-import RecordingToolbar from "../../../components/recorder/RecordingToolbar";
-import AudioPreview from "../../../components/recorder/AudioPreview";
-import formatTime from "../../../utils/formatTime";
-import ExtractedForm from "../../../components/extraction/ExtractedForm";
-import { sendMessage } from "../../../services/chatService";
-import { submitScenario } from "../../../services/scenarioService";
+import TextInput from "./TextInput";
+import ExtractedForm from "../extraction/ExtractedForm";
+import { sendMessage } from "../../services/chatService";
+import { uploadExcel } from "../../services/excelService";
+import { submitScenario } from "../../services/scenarioService";
 
-export default function ScenarioExtractionCard() {
+export default function TextInputCard() {
   const [message, setMessage] = useState("");
   const [submittedData, setSubmittedData] = useState(null);
   const [extractedData, setExtractedData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [hasTranscript, setHasTranscript] = useState(false);
-  const recorder = useVoiceRecorder((response) => {
-    console.log(response);
-
-    // Fill transcript box once speech-to-text comes back
-    setMessage(response?.transcript ?? "");
-    setHasTranscript(true);
-  });
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -52,27 +41,29 @@ export default function ScenarioExtractionCard() {
     }
   };
 
+  const handleExcelUpload = async (file) => {
+    setLoading(true);
+    setExtractedData(null);
+    setSubmittedData(null);
+
+    try {
+      const response = await uploadExcel(file);
+
+      setExtractedData(response.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = () => {
     submitScenario(extractedData);
 
     setSubmittedData(extractedData);
     setExtractedData(null);
     setMessage("");
-    setHasTranscript(false);
   };
-
-  const handleMicClick = () => {
-    if (recorder.isRecording) {
-      recorder.stopRecording();
-    } else {
-      recorder.startRecording();
-    }
-  };
-  const handleDeleteRecording = () => {
-  recorder.deleteRecording();
-  setMessage("");
-  setHasTranscript(false);   // ← lock again, no audio = no text
-};
 
   return (
     <Paper
@@ -94,37 +85,18 @@ export default function ScenarioExtractionCard() {
         <Typography variant="h6">Scenario Intelligence Extraction</Typography>
 
         <Typography variant="body2" color="text.secondary">
-          Record your voice — we'll transcribe it and extract Bureau
-          intelligence fields.
+          Type your scenario details or upload an Excel file to extract
+          Bureau intelligence fields.
         </Typography>
       </Box>
 
       {/* Input */}
       <Box sx={{ p: 3 }}>
-        {recorder.isRecording && (
-          <RecordingToolbar
-            isPaused={recorder.isPaused}
-            recordingTime={formatTime(recorder.recordingTime)}
-            onPauseResume={
-              recorder.isPaused
-                ? recorder.resumeRecording
-                : recorder.pauseRecording
-            }
-          />
-        )}
-
-        <AudioPreview
-          audioUrl={recorder.audioUrl}
-          onDelete={recorder.deleteRecording}
-        />
-
-        <VoiceRecorderInput
+        <TextInput
           message={message}
           onMessageChange={(e) => setMessage(e.target.value)}
           onSend={handleSend}
-          onMicClick={handleMicClick}
-          isRecording={recorder.isRecording}
-          hasTranscript={hasTranscript}   
+          onExcelSelect={handleExcelUpload}
         />
 
         {extractedData && !submittedData && (
