@@ -56,6 +56,10 @@ OUTPUT: Return only valid JSON matching this exact schema. No preamble, no expla
   "business_unit": string or null,
   "product_type": string or null,
   "geography": string or null,
+  "Documentation Issues": string or null,
+  "Device / Access Signals": string or null,
+  "Narrative clue": string or null,
+  "Hidden pattern": string or null,
   "customer_type": "individual" | "business" | null,
   "industry": string or null,
   "risk_level": "low" | "medium" | "high" | "critical" | null,
@@ -70,7 +74,7 @@ OUTPUT: Return only valid JSON matching this exact schema. No preamble, no expla
   "escalation_trigger": string or null,
   "key_sequence": string or null,
   "confirming_evidence": string or null,
-  "bureau_field_tags": [string, ...] (Bureau field names only)
+  "bureau_field_tags": [string, ...] (Bureau field names only),
   "suggested_typology": string or null,
   "notes": string or null
 }
@@ -130,6 +134,7 @@ async def extract_scenario_data(input_text: str):
     content = content.strip()
 
     try:
+        
         return json.loads(content)
 
     except json.JSONDecodeError:
